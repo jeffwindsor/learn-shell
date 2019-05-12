@@ -94,24 +94,22 @@ spacer="-"
 filler="1"
 
 function print_tree(){
-   size=$1
-   n=$size/2
+   local size=$1
+   local n=$size/2
    for ((i=n-1;i>=0;i--)); do print_branch $size $i; echo; done;
    for ((i=0;i<n;i++)); do print_trunk $size; echo; done;
 }
 function print_branch(){
-    size=$1
-    height=$2
-    middle=$(( (height * 2) + 1 ))
-    outside=$(( (size - middle) / 2 ))
-    print_spacers $outside
-    printf $filler
-    print_spacers $middle
-    printf $filler
+    local size=$1
+    local height=$2
+    local middle=$(( (height * 2) + 1 ))
+    local outside=$(( (size - middle) / 2 ))
+    print_filler $outside
+    print_filler $middle
     print_spacers $outside
 }
 function print_trunk(){
-    n=$(( $1 / 2 ))
+    local n=$(( $1 / 2 ))
     print_filler $n
     print_spacers $n
 }
