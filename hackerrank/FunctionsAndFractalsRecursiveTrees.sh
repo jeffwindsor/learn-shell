@@ -93,11 +93,26 @@
 spacer="-"
 filler="1"
 
+function print_tree2(){
+    local size=$1
+    local halfsize=$size/2
+    for (( depth=size; depth>0; depth--))
+    do
+        [[ depth -le halfsize ]] && local m=0 || local m=$(( ((depth - halfsize) * 2) - 1))
+        local n=$(( (size - m) / 2 ))
+        # echo $depth " : " $m " : " $n
+        print_filler $n
+        [[ $m -gt 0 ]] && print_filler $m
+        print_spacers $n
+        echo;
+    done
+}
+
 function print_tree(){
-   local size=$1
-   local n=$size/2
-   for ((i=n-1;i>=0;i--)); do print_branch $size $i; echo; done;
-   for ((i=0;i<n;i++)); do print_trunk $size; echo; done;
+    local size=$1
+    local n=$size/2
+    for ((i=n-1;i>=0;i--)); do print_branch $size $i; echo; done;
+    for ((i=0;i<n;i++)); do print_trunk $size; echo; done;
 }
 function print_branch(){
     local size=$1
@@ -117,8 +132,8 @@ function print_trunk(){
     print_spacers $n
 }
 function print_filler(){
-   print_spacers $1
-   printf $filler
+    print_spacers $1
+    printf $filler
 }
 function print_spacers() {
     [[ $1 -gt 0 ]] && printf "%0.s${spacer}" {1..${1}};
