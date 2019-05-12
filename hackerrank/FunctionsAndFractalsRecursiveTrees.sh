@@ -103,13 +103,16 @@ function print_branch(){
     local size=$1
     local height=$2
     local middle=$(( (height * 2) + 1 ))
-    local outside=$(( (size - middle) / 2 ))
-    print_filler $outside
-    print_filler $middle
-    print_spacers $outside
+
+    local n=$(( (size - middle) / 2 ))
+    print_filler $n
+    [[ $middle -gt 0 ]] && print_filler $middle
+    print_spacers $n
 }
 function print_trunk(){
-    local n=$(( $1 / 2 ))
+    local size=$1
+
+    local n=$(( $size / 2 ))
     print_filler $n
     print_spacers $n
 }
