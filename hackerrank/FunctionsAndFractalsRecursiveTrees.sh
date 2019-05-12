@@ -101,7 +101,7 @@ function print_tree(){
 function print_branch(){
     size=$1
     height=$2
-    middle=$(( (height * 2) + 1 ))
+    middle=$(( height + 1 ))
     outside=$(( (size - middle) / 2 ))
     print_spaces $outside
     printf "1"
