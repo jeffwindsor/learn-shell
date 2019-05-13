@@ -67,7 +67,7 @@
 
 # This challenge involves the construction of trees, in the form of ASCII Art.
 
-# We have to deal with real world constraints, so we cannot keep repeating the pattern infinitely. So, we will provide you a number of iterations, and you need to generate the ASCII version of the Fractal Tree for only those many iterations (or, levels of recursion). A few samples are provided below.
+# We have to deal with real world constraints, so we cannot keep repeating the pattern infinitely. So, we will provide you a number of iterations, and you need to generate the ASCII version of the Fractal Tree for only those many iterations (or, level_liness of recursion). A few samples are provided below.
 
 # Iteration #1
 # In the beginning, we simply create a Y. There are 63 rows and 100 columns in the grid below. The triangle is composed of underscores and ones as shown below. The vertical segment and the slanting segments are both 16 characters in length.
@@ -90,51 +90,45 @@
 
 #     done
 # }
-spacer="-"
-filler="1"
 
-function print_tree2(){
-    local size=$1
+function print_tree(){
+    local size=${1:-2}
+    local times=${2:-1}
     local halfsize=$size/2
-    for (( depth=size; depth>0; depth--))
-    do
+    for (( depth=size; depth>0; depth--)); do
         [[ depth -le halfsize ]] && local m=0 || local m=$(( ((depth - halfsize) * 2) - 1))
         local n=$(( (size - m) / 2 ))
-        # echo $depth " : " $m " : " $n
-        print_filler $n
-        [[ $m -gt 0 ]] && print_filler $m
-        print_spacers $n
+
+        print_line $n $m
+        for (( t=1; t<times; t++ )); do
+            spacer $(( size - 1 ))
+            print_line $n $m;
+        done
         echo;
     done
 }
+function print_line(){
+    spacer $1; branch;
+    if [[ $2 -gt 0 ]]; then spacer $2; branch; fi;
+    spacer $1;
+}
+function branch()  { printf "1"; }
+function spacer() { [[ $1 -gt 0 ]] && printf "%0.s-" {1..${1}}; }
+function draw_spacer_lines(){
+    local lines=0; local width=$1; local limit=$2
+    for (( lines=0; lines<$limit; lines++ )); do
+        spacer $width; echo;
+    done
+}
+function draw_fractal(){
+    echo draw $1
+}
 
-function print_tree(){
-    local size=$1
-    local n=$size/2
-    for ((i=n-1;i>=0;i--)); do print_branch $size $i; echo; done;
-    for ((i=0;i<n;i++)); do print_trunk $size; echo; done;
-}
-function print_branch(){
-    local size=$1
-    local height=$2
-    local middle=$(( (height * 2) + 1 ))
-
-    local n=$(( (size - middle) / 2 ))
-    print_filler $n
-    [[ $middle -gt 0 ]] && print_filler $middle
-    print_spacers $n
-}
-function print_trunk(){
-    local size=$1
-
-    local n=$(( $size / 2 ))
-    print_filler $n
-    print_spacers $n
-}
-function print_filler(){
-    print_spacers $1
-    printf $filler
-}
-function print_spacers() {
-    [[ $1 -gt 0 ]] && printf "%0.s${spacer}" {1..${1}};
-}
+read requested_levels
+level_limit=6
+for (( level=0; level<level_limit; level++ )); do
+    level_size=$(echo "2^${level}" | bc)
+    [[ $level -lt $(( level_limit - requested_levels )) ]] \
+        && draw_spacer_lines 100 $level_size \
+        || draw_fractal $level_size
+done
